@@ -37,6 +37,7 @@ dydt(vid.BV)=BV*mu-mortV;
 dydt(vid.CO2)=BV*(h*(1-par.Yb)+R);
 dydt(vid.hup)=h*BV;
 dydt(vid.cue)=mu/h;
+dydt(vid.mu)=mu;
 %fprintf('mu=%f,%f,%f\n',mu,h*par.Yb,R);
 %fprintf('%f,%f,%f,%f\n',sum(dydt(1:3)),par.Fnpp,mu,R);
 end

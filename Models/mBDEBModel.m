@@ -1,6 +1,7 @@
-function dydt=sDEBModel(y,TempK,par)
+function dydt=mBDEBModel(y,TempK,par)
 %
-%sDEB model
+%mDEB model compute uptake based on total biomass
+%
 %
 %apply temperature scaling of the parameters
 fT_Vl=fT_Eyring(TempK,par.H_Vl,par);
@@ -26,24 +27,25 @@ Cl=y(vid.Cl);
 Cs=y(vid.Cs);
 Bc=y(vid.Bc);
 BV=y(vid.BV);
+gamma=gamma*BV./(par.alpha_B0+BV);
+
 denorm=1+Cl/Kl+Cs/Ks;
-hl=Vl*Cl/Kl/denorm;
-hs=Vs*Cs/Ks/denorm;
+hl=(BV+Bc)*Vl*Cl/Kl/denorm;
+hs=(BV+Bc)*Vs*Cs/Ks/denorm;
 Fnpp2Cl=(1-par.a)*par.Fnpp;
 h=hl+hs;
-gamma=gamma*BV./(par.alpha_B0+BV);
 mortC=gamma*Bc;
 mortV=gamma*BV;
 mort=mortC+mortV;
-x=Bc/BV;
-vC=ve*x;
-mu=(par.YV*vC-mV)/(1.+par.YV*x); %specific growth rate
-dydt(vid.Cl)=Fnpp2Cl-BV*hl;
-dydt(vid.Cs)=par.Fnpp-Fnpp2Cl-BV*hs+mort;
-dydt(vid.Bc)=par.Yb*h*BV-(ve-mu)*Bc-mortC;
+vC=ve*Bc;
+
+mu=par.YV*vC/BV-mV; %specific growth rate
+dydt(vid.Cl)=Fnpp2Cl-hl;
+dydt(vid.Cs)=par.Fnpp-Fnpp2Cl-hs+mort;
+dydt(vid.Bc)=par.Yb*h-vC-mortC;
 dydt(vid.BV)=mu*BV-mortV;
-dydt(vid.CO2)=((ve-mu)*x-mu+(1-par.Yb)*h)*BV;
+dydt(vid.CO2)=(1-par.Yb)*h*BV+(1-par.YV)*vC+mV*BV;
 dydt(vid.hup)=h*BV;
-dydt(vid.cue)=mu/h;
+dydt(vid.cue)=(par.YV*vC-mV*BV)/(h*BV);
 dydt(vid.mu)=mu;
 end

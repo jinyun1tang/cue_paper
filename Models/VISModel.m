@@ -37,11 +37,13 @@ mortC=gamma*Bc;
 mortV=gamma*BV;
 mort=mortC+mortV;
 vC=ve*Bc;
+mu=par.YV*vC/BV; %specific growth rate
 dydt(vid.Cl)=par.Fnpp-Fnpp2Cs-BV*hl;
 dydt(vid.Cs)=Fnpp2Cs-BV*hs+mort;
 dydt(vid.Bc)=(par.Yb*h-mV)*BV-vC-mortC;
-dydt(vid.BV)=par.YV*vC-mortV;
+dydt(vid.BV)=mu*BV-mortV;
 dydt(vid.CO2)=((1-par.Yb)*h+mV)*BV+(1-par.YV)*vC;
 dydt(vid.hup)=h*BV;
 dydt(vid.cue)=par.YV*vC/(h*BV);
+dydt(vid.mu)=mu;
 end

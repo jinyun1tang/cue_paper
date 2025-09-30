@@ -12,12 +12,13 @@ global VISModelPar;
 global sDEBModelPar;
 global mDEBModelPar;
 setPars();
-y01=sPirtModel(pirtModelPar);dydt1=PirtModel([y01,0,0,0],pirtModelPar.T0,pirtModelPar);
-y02=sComproModel(ComproModelPar);dydt2=ComproModel([y02,0,0,0],ComproModelPar.T0,ComproModelPar);
-y03=smDroopModel(mDroopModelPar);dydt3=mDroopModel([y03,0,0,0],mDroopModelPar.T0,mDroopModelPar);
-y04=sVISModel(VISModelPar);dydt4=VISModel([y04,0,0,0],VISModelPar.T0,VISModelPar);
-y05=ssDEBModel(sDEBModelPar);dydt5=sDEBModel([y05,0,0,0],sDEBModelPar.T0,sDEBModelPar);
-y06=smDEBModel(mDEBModelPar);dydt6=mDEBModel([y06,0,0,0],mDEBModelPar.T0,mDEBModelPar);
+y01=sPirtModel(pirtModelPar);dydt1=PirtModel([y01,0,0,0,0],pirtModelPar.T0,pirtModelPar);
+y02=sComproModel(ComproModelPar);dydt2=ComproModel([y02,0,0,0,0],ComproModelPar.T0,ComproModelPar);
+y03=smDroopModel(mDroopModelPar);dydt3=mDroopModel([y03,0,0,0,0],mDroopModelPar.T0,mDroopModelPar);
+y04=sVISModel(VISModelPar);dydt4=VISModel([y04,0,0,0,0],VISModelPar.T0,VISModelPar);
+y05=ssDEBModel(sDEBModelPar);dydt5=sDEBModel([y05,0,0,0,0],sDEBModelPar.T0,sDEBModelPar);
+y06=smDEBModel(mDEBModelPar);dydt6=mDEBModel([y06,0,0,0,0],mDEBModelPar.T0,mDEBModelPar);
+y07=smDEBModel(mDEBModelPar);dydt7=mBDEBModel([y06,0,0,0,0],mDEBModelPar.T0,mDEBModelPar);
 
 nyr=50;
 if isfile('dnpp.mat')
@@ -64,7 +65,7 @@ temps=repmat(tempC,[1,nyr])+273.15;
 tspan=[0,nyr];
 par=pirtModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
 
-[t1,y1]=euler_driver([y01,0,0,0],tspan,ns,@PirtModel,par);
+[t1,y1]=euler_driver([y01,0,0,0,0],tspan,ns,@PirtModel,par);
 figure;
 for jj=1:3
     subplot(4,1,jj);
@@ -75,7 +76,7 @@ plot(diff(y1(:,par.vid.hup))./y1(2:end,par.vid.Cb),1-diff(y1(:,par.vid.CO2))./di
 title('Pirt model CUE');
 
 par=ComproModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
-[t2,y2]=euler_driver([y02,0,0,0],tspan,ns,@ComproModel,par);
+[t2,y2]=euler_driver([y02,0,0,0,0],tspan,ns,@ComproModel,par);
 figure;
 for jj=1:3
     subplot(4,1,jj);
@@ -87,7 +88,7 @@ plot(diff(y2(:,par.vid.hup))./y2(2:end,par.vid.Cb),1-diff(y2(:,par.vid.CO2))./di
 title('Compromise model CUE');
 
 par=mDroopModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
-[t3,y3]=euler_driver([y03,0,0,0],tspan,ns,@mDroopModel,par);
+[t3,y3]=euler_driver([y03,0,0,0,0],tspan,ns,@mDroopModel,par);
 figure;
 for jj=1:4
     subplot(5,1,jj);
@@ -103,7 +104,7 @@ plot(diff(y3(:,par.vid.hup))./y3(2:end,par.vid.BV),1-diff(y3(:,par.vid.CO2))./di
 title('mDroop model CUE');
 
 par=VISModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
-[t4,y4]=euler_driver([y04,0,0,0],tspan,ns,@VISModel,par);
+[t4,y4]=euler_driver([y04,0,0,0,0],tspan,ns,@VISModel,par);
 figure;
 for jj=1:4
     subplot(5,1,jj);
@@ -115,7 +116,7 @@ title('VIS model CUE');
 
 par=sDEBModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
 
-[t5,y5]=euler_driver([y05,0,0,0],tspan,ns,@sDEBModel,par);
+[t5,y5]=euler_driver([y05,0,0,0,0],tspan,ns,@sDEBModel,par);
 figure;
 for jj=1:4
     subplot(5,1,jj);
@@ -126,7 +127,7 @@ plot(diff(y5(:,par.vid.hup))./y5(2:end,par.vid.BV),1-diff(y5(:,par.vid.CO2))./di
 title('sDEB model CUE');
 
 par=mDEBModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
-[t6,y6]=euler_driver([y06,0,0,0],tspan,ns,@mDEBModel,par);
+[t6,y6]=euler_driver([y06,0,0,0,0],tspan,ns,@mDEBModel,par);
 figure;
 for jj=1:4
     subplot(5,1,jj);
@@ -135,6 +136,10 @@ end
 subplot(5,1,5);
 plot(diff(y6(:,par.vid.hup))./y6(2:end,par.vid.BV),1-diff(y6(:,par.vid.CO2))./diff(y6(:,par.vid.hup)));
 title('mDEB model CUE');
+
+par=mDEBModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
+[t7,y7]=euler_driver([y07,0,0,0,0],tspan,ns,@mBDEBModel,par);
+
 close all;
 %%
 fig=figure;
@@ -164,7 +169,7 @@ plot(t4,y4(:,2),'LineWidth',2);
 plot(t5,y5(:,2),'LineWidth',2);
 plot(t6,y6(:,2),'LineWidth',2);
 ylabel('Slow pool C (gC m^-^2)');
-legend('Pirt Model','Comp Model','mDroop Model','VIS Model','sDEB Model','mDEB model','Orientation','Horizontal');
+legend('Pirt Model','Compromise Model','mDroop Model','VIS Model','sDEB Model','mDEB model','Orientation','Horizontal');
 
 
 set_curAX(fig,ax(4));
@@ -190,35 +195,36 @@ ax=multipanel(fig,3,1,[.1,.08],[0.8,0.25],[0.05,0.075],'portrait');
 set_curAX(fig,ax(1));
 id0=365*10;
 par=pirtModelPar;
-hdl(1)=plot(diff(y1(id0:end,par.vid.hup))./y1(id0+1:end,par.vid.Cb)./(t1(2)-t1(1)),1-diff(y1(id0:end,par.vid.CO2))./diff(y1(id0:end,par.vid.hup)),'-','LineWidth',0.5);
+hdl(1)=plot(diff(y1(id0:end,par.vid.mu))./(t1(2)-t1(1)),1-diff(y1(id0:end,par.vid.CO2))./diff(y1(id0:end,par.vid.hup)),'-','LineWidth',0.5);
 hold on;
-hdl(2)=plot(diff(y2(id0:end,par.vid.hup))./(y2(id0+1:end,par.vid.Cb))./(t2(2)-t2(1)),1-diff(y2(id0:end,par.vid.CO2))./diff(y2(id0:end,par.vid.hup)),'-.','LineWidth',0.5);
+hdl(2)=plot(diff(y2(id0:end,par.vid.mu))./(t2(2)-t2(1)),1-diff(y2(id0:end,par.vid.CO2))./diff(y2(id0:end,par.vid.hup)),'-','LineWidth',0.5);
 ylabel('Total biomass CUE');
-xlabel('Specific C uptake rate  [gC substrate (gC biomass yr)^-^1]');
-legend('Pirt Model','Comp Model','location','southeast');
+xlabel('Specific growth rate (yr^-^1)');
+legend('Pirt Model','Compromise Model','location','southeast');
 %ylim([0.48,0.52]);
-%xlim([2.4,3.0]);
+xlim([-0.3,3]);
 
 par=mDroopModelPar;
 set_curAX(fig,ax(2));
-hdl(1)=plot(diff(y3(id0:end,par.vid.hup))./y3(id0+1:end,par.vid.BV)./(t3(2)-t3(1)),1-diff(y3(id0:end,par.vid.CO2))./diff(y3(id0:end,par.vid.hup)),'LineWidth',0.5);
+hdl(1)=plot(diff(y3(id0:end,par.vid.mu))./(t3(2)-t3(1)),1-diff(y3(id0:end,par.vid.CO2))./diff(y3(id0:end,par.vid.hup)),'LineWidth',0.5);
 ylabel('Total biomass CUE');
-xlabel('Specific C uptake rate  [gC substrate (gC biomass yr)^-^1]');
+xlabel('Specific growth rate (yr^-^1)');
 legend('mDroop Model','location','southeast');
-
+xlim([-0.3,3]);
 par=mDEBModelPar;
 set_curAX(fig,ax(3));
 
-hdl(1)=plot(diff(y4(id0:end,par.vid.hup))./y4(id0+1:end,par.vid.BV)./(t4(2)-t4(1)),1-diff(y4(id0:end,par.vid.CO2))./diff(y4(id0:end,par.vid.hup)),'LineWidth',0.5);
+hdl(1)=plot(diff(y4(id0:end,par.vid.mu))./(t4(2)-t4(1)),1-diff(y4(id0:end,par.vid.CO2))./diff(y4(id0:end,par.vid.hup)),'LineWidth',0.5);
 hold on;
-hdl(2)=plot(diff(y5(id0:end,par.vid.hup))./(y5(id0+1:end,par.vid.BV))./(t5(2)-t5(1)),1-diff(y5(id0:end,par.vid.CO2))./diff(y5(id0:end,par.vid.hup)),'LineWidth',0.5);
-hdl(3)=plot(diff(y6(id0:end,par.vid.hup))./(y6(id0+1:end,par.vid.BV))./(t6(2)-t6(1)),1-diff(y6(id0:end,par.vid.CO2))./diff(y6(id0:end,par.vid.hup)),'LineWidth',0.5);
+hdl(2)=plot(diff(y5(id0:end,par.vid.mu))./(t5(2)-t5(1)),1-diff(y5(id0:end,par.vid.CO2))./diff(y5(id0:end,par.vid.hup)),'LineWidth',0.5);
+hdl(3)=plot(diff(y6(id0:end,par.vid.mu))./(t6(2)-t6(1)),1-diff(y6(id0:end,par.vid.CO2))./diff(y6(id0:end,par.vid.hup)),'LineWidth',0.5);
+xlim([-0.3,3.0]);ylim([0.25,0.5]);
 ylabel('Total biomass CUE');
-xlabel('Specific C uptake rate [gC substrate (gC biomass yr)^-^1]');
+xlabel('Specific growth rate (yr^-^1)');
 legend('VIS Model','sDEB Model','mDEB Model','location','southeast');
+
 %set(ax(3),'Ylim',[0.42,0.45]);
 set(ax,'FontSize',18);
-set(ax,'Ylim',[-0.3,0.91]);
 
 %set(ax(2:3),'Xlim',[2.6,3.2]);
 put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
@@ -235,7 +241,7 @@ hold on;
 hdl(2)=plot(temps(id0:end),1-diff(y2(id0:end,par.vid.CO2))./diff(y2(id0:end,par.vid.hup)),'-.','LineWidth',0.5);
 ylabel('Total biomass CUE');
 xlabel('Temperature (^oC)');
-legend('Pirt Model','Comp Model','location','northeast');
+legend('Pirt Model','Compromise Model','location','northeast');
 %ylim([0.48,0.52]);
 %xlim([2.4,3.0]);
 
@@ -257,9 +263,11 @@ hdl(3)=plot(temps(id0:end),1-diff(y6(id0:end,par.vid.CO2))./diff(y6(id0:end,par.
 ylabel('Total biomass CUE');
 xlabel('Temperature (^oC)');
 legend('VIS Model','sDEB Model','mDEB Model','location','northeast');
-set(ax([1,3]),'Ylim',[0.,0.5]);
+ylim([0.25,0.5]);
+%set(ax([1,3]),'Ylim',[0.,0.5]);
 set(ax,'FontSize',18);
 %set(ax(2:3),'Xlim',[2.6,3.2]);
+%set(ax,'Ylim',[-0.3,0.91]);
 put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
 put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
 put_tag(fig,ax(3),[0.025,0.9],'(c)',18);
@@ -281,6 +289,35 @@ xlabel('Ordinal day');
 ylabel('Temperature (^oC)');
 set(ax(2),'FontSize',18);
 put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
+
+
+fig=figure;
+ax=multipanel(fig,3,1,[.1,.07],[0.8,0.271],[0.05,0.05],'portrait');
+set_curAX(fig,ax(1));
+
+plot(t6,y6(:,1),'LineWidth',2);
+hold on;
+plot(t7,y7(:,1),'LineWidth',2);
+legend('mDEB: C uptake scaled by structural biomass','mDEB: C uptake scaled by total biomass');
+
+ylabel('Fast pool C (gC m^-^2)');
+
+set_curAX(fig,ax(2));
+plot(t6,y6(:,2),'LineWidth',2);
+hold on;
+plot(t6,y7(:,2),'LineWidth',2);
+ylabel('Slow pool C (gC m^-^2)');
+
+set_curAX(fig,ax(3));
+
+plot(t4,y6(:,3)+y6(:,4),'LineWidth',2);hold on;
+plot(t4,y7(:,3)+y7(:,4),'LineWidth',2);
+ylabel('Total microbial biomass (gC m^-^2)');
+xlabel('Year','FontSize',18);
+set(ax,'FontSize',18);
+put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
+put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
+put_tag(fig,ax(3),[0.025,0.9],'(c)',18);
 
 %%
 function [t,y]=euler_driver(y0,tspan,ns,model,par)

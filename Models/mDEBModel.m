@@ -37,11 +37,13 @@ mortC=gamma*Bc;
 mortV=gamma*BV;
 mort=mortC+mortV;
 vC=ve*Bc;
+mu=par.YV*vC/BV-mV;
 dydt(vid.Cl)=Fnpp2Cl-BV*hl;
 dydt(vid.Cs)=par.Fnpp-Fnpp2Cl-BV*hs+mort;
 dydt(vid.Bc)=par.Yb*BV*h-vC-mortC;
-dydt(vid.BV)=par.YV*vC-mV*BV-mortV;
+dydt(vid.BV)=mu*BV-mortV;
 dydt(vid.CO2)=(1-par.Yb)*h*BV+(1-par.YV)*vC+mV*BV;
 dydt(vid.hup)=h*BV;
 dydt(vid.cue)=(par.YV*vC-mV*BV)/(h*BV);
+dydt(vid.mu)=mu;
 end
