@@ -5,6 +5,7 @@
 close all;
 clear all;
 addpath('./Models/');
+addpath('/Users/jinyuntang/work/github/matlab_tools/');
 addpath('/Users/jinyuntang/work/github/matlab_tools/ds2nfu/');
 global pirtModelPar;
 global ComproModelPar;
@@ -25,6 +26,8 @@ if isfile('dnpp.mat')
 else
     dnpp=randn(nyr,1).*50;
 end
+dnpp=dnpp.*0;
+
 m0=(1:12)-6.5;
 w0=exp(-m0.^2./4);
 wnpp0=w0./sum(w0);
@@ -113,7 +116,7 @@ ax=multipanel(fig,4,1,[.1,.06],[0.8,0.185],[0.05,0.055],'portrait');
 
 set_curAX(fig,ax(1));
 
-plot(dnpp(1:nyr)+300,'LineWidth',1.5);
+plot(dnpp(1:nyr)+par.Fnpp,'LineWidth',1.5);
 ylabel('Carbon input (gC m^-^2 yr^-^1)');
 
 set_curAX(fig,ax(2));
@@ -211,7 +214,7 @@ box on;
 ylabel('Total biomass CUE');
 xlabel('Specific growth rate (yr^-^1)');
 
-
+set(ax,'FontSize',18);
 put_tag(fig,ax(1),[0.025,0.9],'(a) mDroop Model',18);
 put_tag(fig,ax(2),[0.025,0.9],'(b) mDEB Model',18);
 

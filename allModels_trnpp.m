@@ -26,6 +26,7 @@ if isfile('dnpp.mat')
 else
     dnpp=randn(nyr,1).*50;
 end
+dnpp=dnpp.*0;
 m0=(1:12)-6.5;
 w0=exp(-m0.^2./4);
 wnpp0=w0./sum(w0);
@@ -60,7 +61,13 @@ tempC=[3.89,0.94,0.53,0.47,1.68,3.21,3.17,2.33,2.03,2.42,3.07,1.81,0.98,...
     10.43,10.08,8.95,7.01,7.70,3.84,1.36,0.66,0.42,1.00,3.60,3.95,5.71,9.40,6.01,4.07,...
     3.42,3.84,4.02,5.06,4.48,2.57,2.58,5.21,5.25,3.17,2.77,2.01,2.34,2.71,2.40,...
     0.33,0.12,0.02,-0.03,-0.03,-0.14,-0.45,-0.53,-0.57];
-temps=repmat(tempC,[1,nyr])+273.15;
+
+omega=2*pi/365.0;
+tmodel = @(t) 13.46*sin(omega*t -1.823) + 13.320;
+
+tdays=(1:nyr*365);
+temps=tmodel(tdays)+273.15;
+%temps=repmat(tempC,[1,nyr])+273.15;
 
 tspan=[0,nyr];
 par=pirtModelPar;par.wnpp=wnpp;par.temps=temps;par.dnpp=dnpp;
@@ -147,7 +154,7 @@ ax=multipanel(fig,4,1,[.1,.06],[0.8,0.185],[0.05,0.055],'portrait');
 
 set_curAX(fig,ax(1));
 
-plot(dnpp(1:nyr)+300,'LineWidth',1.5);
+plot(dnpp(1:nyr)+par.Fnpp,'LineWidth',1.5);
 ylabel('Carbon input (gC m^-^2 yr^-^1)');
 
 set_curAX(fig,ax(2));
@@ -210,7 +217,7 @@ hdl(1)=plot(diff(y3(id0:end,par.vid.mu))./(t3(2)-t3(1)),1-diff(y3(id0:end,par.vi
 ylabel('Total biomass CUE');
 xlabel('Specific growth rate (yr^-^1)');
 legend('mDroop Model','location','southeast');
-xlim([-0.3,3]);
+xlim([-0.3,3]);ylim([-0.4,0.7]);
 par=mDEBModelPar;
 set_curAX(fig,ax(3));
 
@@ -273,8 +280,8 @@ put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
 put_tag(fig,ax(3),[0.025,0.9],'(c)',18);
 
 fig=figure;
-ax=multipanel(fig,2,1,[.1,.08],[0.8,0.41],[0.05,0.075],'portrait');
-set_curAX(fig,ax(1));
+ax=multipanel(fig,3,1,[.1,.08],[0.8,0.24],[0.05,0.07],'portrait');
+set_curAX(fig,ax(2));
 
 bar(wnpp0);
 xlabel('Month');
@@ -283,13 +290,25 @@ set(ax(1),'FontSize',18);
 
 put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
 
-set_curAX(fig,ax(2));
+set_curAX(fig,ax(3));
 plot(tempC,'LineWidth',2);
+hold on;
+plot(tmodel((1:365)),'LineWidth',2');
+legend('data','Sine fit');
 xlabel('Ordinal day');
 ylabel('Temperature (^oC)');
 set(ax(2),'FontSize',18);
 put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
 
+
+set_curAX(fig,ax(1));
+plot(dnpp(1:nyr)+350,'LineWidth',1.5);
+hold on;
+plot(dnpp(1:nyr).*0+350,'LineWidth',1.5);
+legend('Variable C input','Constant C input');
+ylabel('Annual carbon input (gC m^-^2 yr^-^1)');
+xlabel('Ordinal year');
+set(ax,'FontSize',18);
 
 fig=figure;
 ax=multipanel(fig,3,1,[.1,.07],[0.8,0.271],[0.05,0.05],'portrait');
