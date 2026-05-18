@@ -179,6 +179,7 @@ hdl(1)=plot(diff(y3(:,par.vid.mu))./(t3(2)-t3(1)),1-diff(y3(:,par.vid.CO2))./dif
 ylabel('Total biomass CUE');
 xlabel('Specific growth rate  (yr^-^1)');
 legend('mDroop Model','location','southeast');
+
 %set(ax(2),'Ylim',[0.41,0.45]);
 
 par=mDEBModelPar;
@@ -192,7 +193,7 @@ ylabel('Total biomass CUE');
 xlabel('Specific growth rate (yr^-^1)');
 
 legend('VIS Model','sDEB Model','mDEB Model','location','southeast');
-set(ax,'FontSize',18,'Xlim',[0.7,1.35],'Ylim',[0.4,0.48]);
+set(ax,'FontSize',18,'Xlim',[0.8,1.2],'Ylim',[0.42,0.48]);
 %set(ax(2:3),'Xlim',[2.6,3.2]);
 put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
 put_tag(fig,ax(2),[0.025,0.9],'(b)',18);

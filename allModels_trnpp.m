@@ -288,7 +288,6 @@ xlabel('Month');
 ylabel('Fraction of NPP allocated');
 set(ax(1),'FontSize',18);
 
-put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
 
 set_curAX(fig,ax(3));
 plot(tempC,'LineWidth',2);
@@ -298,8 +297,7 @@ legend('data','Sine fit');
 xlabel('Ordinal day');
 ylabel('Temperature (^oC)');
 set(ax(2),'FontSize',18);
-put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
-
+xlim([0,370]);
 
 set_curAX(fig,ax(1));
 plot(dnpp(1:nyr)+350,'LineWidth',1.5);
@@ -309,6 +307,9 @@ legend('Variable C input','Constant C input');
 ylabel('Annual carbon input (gC m^-^2 yr^-^1)');
 xlabel('Ordinal year');
 set(ax,'FontSize',18);
+put_tag(fig,ax(1),[0.025,0.9],'(a)',18);
+put_tag(fig,ax(2),[0.025,0.9],'(b)',18);
+put_tag(fig,ax(3),[0.025,0.9],'(c)',18);
 
 fig=figure;
 ax=multipanel(fig,3,1,[.1,.07],[0.8,0.271],[0.05,0.05],'portrait');
